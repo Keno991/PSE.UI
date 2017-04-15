@@ -33,7 +33,9 @@ namespace PSE.Web.Api.Configuration
                 // Create a channel.
                 service = _factory.CreateChannel();
             }
-            catch(Exception e) when(url == null) {
+            catch(Exception e) when(url != null) // Exception should not be caught if someone is stupid enough to pass null as url
+            {
+
             }
         }
 
