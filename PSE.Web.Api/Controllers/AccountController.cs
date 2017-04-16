@@ -15,7 +15,7 @@ namespace PSE.Web.Api.Controllers
         public IActionResult LoginCallback()
         {
             if (HttpContext.User.Identity.IsAuthenticated)
-                return Redirect($"{HttpContext.Request.PathBase.ToString()}/pages/PullImgForm.html");
+                return Redirect($"{HttpContext.Request.PathBase.ToString()}/index.html");
             return Unauthorized();
         }
 
