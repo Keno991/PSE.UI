@@ -99,7 +99,8 @@ namespace PSE.Web.Api
             app.UseCookieAuthentication(new CookieAuthenticationOptions()
             {
                 AutomaticAuthenticate = true,
-                AutomaticChallenge = true
+                AutomaticChallenge = true,
+                ExpireTimeSpan = TimeSpan.FromDays(1)
             });
 
             app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
@@ -118,7 +119,7 @@ namespace PSE.Web.Api
             {
                 routes.MapRoute(
                     name: "Default",
-                    template: "{controller}/{action}"
+                    template: "{controller=Home}/{action=Index}"
                     );
             });
 
