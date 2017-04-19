@@ -1,0 +1,1 @@
+//# sourceMappingURL=IPullingImagesModel.js.map

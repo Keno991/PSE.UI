@@ -20,6 +20,7 @@ using System.IO;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using PSE.Web.Api.Helpers;
+using Newtonsoft.Json.Serialization;
 
 namespace PSE.Web.Api
 {
@@ -43,14 +44,25 @@ namespace PSE.Web.Api
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
 
-            // Add framework services.
+            // Configure MVC
             ConfigureMvc(services);
+
+            // Configure AutoMapper
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperConfiguration());
+            });
+
+            var mapper = config.CreateMapper();
 
             var builder = new ContainerBuilder();
 
             builder.RegisterInstance(Configuration).As<IConfiguration>();
+
+            builder.RegisterInstance(mapper).SingleInstance();
             builder.RegisterType<CommonTracing>().As<ICommonTracing>().SingleInstance();
 
+            // Configure WCF Services
             builder
               .Register(c => new ChannelFactory<IImageUtilityService>( new BasicHttpBinding(), new EndpointAddress(Configuration["WcfService:Endpoints:ImageSvc"])))
               .SingleInstance();
@@ -72,10 +84,12 @@ namespace PSE.Web.Api
             var policy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build();
-            services.AddMvc(options =>
+            var mvcBuilder = services.AddMvc(options =>
             {
                 options.Filters.Add(new PSEAuthorizeAttribute(policy));
             });
+
+            mvcBuilder.AddJsonOptions(opt => opt.SerializerSettings.ContractResolver = new DefaultContractResolver());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

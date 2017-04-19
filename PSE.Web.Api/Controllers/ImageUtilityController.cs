@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PSE.BLL.WCF.Contracts.Contracts;
+using PSE.BLL.WCF.Contracts.DataContracts;
 using PSE.Web.Api.Configuration;
 using PSE.Web.Api.Helpers;
+using PSE.Web.Api.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +20,12 @@ namespace PSE.Web.Api.Controllers
     public class ImageUtilityController : PSEBaseController
     {
         IImageUtilityService _imgUtilService;
-        ILogger _logger;
+        IMapper _mapper;
 
-        public ImageUtilityController(IImageUtilityService imgUtilService, ICommonTracing tracing) : base(tracing)
+        public ImageUtilityController(IImageUtilityService imgUtilService, ICommonTracing tracing, IMapper mapper) : base(tracing)
         {
             _imgUtilService = imgUtilService;
-
+            _mapper = mapper;
         }
 
         public bool Get()
@@ -31,9 +34,10 @@ namespace PSE.Web.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> Post(string url)
+        public async Task<PullingImagesViewModel> Post(string url)
         {
-            return await _tracing.TracingInvoke(async () => await _imgUtilService.PullImagesFromWebPage(url));
+            return await _tracing.TracingInvoke(async () => 
+            _mapper.Map<PullingImagesModel, PullingImagesViewModel>(await _imgUtilService.PullImagesFromWebPage(url)));
         }
 
     }

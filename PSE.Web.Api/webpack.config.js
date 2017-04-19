@@ -1,4 +1,5 @@
-﻿var ExtractTextPlugin = require('extract-text-webpack-plugin');
+﻿/// <binding AfterBuild='Run - Development' />
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
